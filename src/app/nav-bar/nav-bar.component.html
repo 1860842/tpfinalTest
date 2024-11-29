@@ -1,7 +1,9 @@
-<nav *ngIf="sessionActive()">
+<nav>
   <ul>
     <li><a routerLink="">Aide</a></li>
     <li><a routerLink="">Rapports</a></li>
-    <li><a routerLink="/capture">Capture</a></li>
+    <li *ngIf="sessionActive()"><a routerLink="/capture">Capture</a></li>
+    <li *ngIf="sessionActive()"><button (click)="logout()">Déconnecter</button></li>
+    <li *ngIf="!sessionActive()"><button (click)="login()">Se connecter</button></li>
   </ul>
 </nav>

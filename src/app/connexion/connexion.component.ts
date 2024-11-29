@@ -26,7 +26,9 @@ export class ConnexionComponent implements OnInit {
     if (this.username && this.password) {
       console.log(this.username, this.password);
       if (this.authService.authenticate(this.username, this.password)) {
-        this.sessionService.createSession(this.username);
+        if (!this.sessionService.isSessionActive()) {
+          this.sessionService.createSession(this.username, this.password);
+        }
         this.router.navigate(['/dashboard']);
       } else {
         alert('Invalid credentials');

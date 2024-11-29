@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { RouterLink } from '@angular/router';
+import { RouterLink, Router } from '@angular/router';
 import { SessionService } from '../services/session.service';
 import { CommonModule } from '@angular/common';
 
@@ -12,10 +12,19 @@ import { CommonModule } from '@angular/common';
 })
 export class NavBarComponent {
   constructor(
-    private sessionService: SessionService
+    private sessionService: SessionService,
+    private router: Router
   ) {}
 
   sessionActive(): boolean {
     return this.sessionService.isSessionActive();
+  }
+
+  logout() {
+    this.sessionService.destroySession();
+  }
+
+  login() {
+    this.router.navigate(['/connexion']);
   }
 }

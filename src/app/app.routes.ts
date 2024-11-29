@@ -5,7 +5,7 @@ import { CaptureComponent } from './capture/capture.component';
 
 export const routes: Routes = [ 
   { path: '', component: ConnexionComponent },
-  { path: 'login', component: ConnexionComponent },     // Route pour la page de connexion
+  { path: 'connexion', component: ConnexionComponent },     // Route pour la page de connexion
   { path: 'dashboard', component: NavBarComponent },    // Route pour la barre de navigation principale
   { path: 'capture', component: CaptureComponent },     // Route pour la page de capture
 ];
