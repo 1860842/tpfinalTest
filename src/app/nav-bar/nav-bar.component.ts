@@ -11,10 +11,18 @@ import { CommonModule } from '@angular/common';
   styleUrls: ['./nav-bar.component.css']
 })
 export class NavBarComponent {
+  username: string | null = null;
+
   constructor(
     private sessionService: SessionService,
     private router: Router
   ) {}
+
+  ngOnInit() {
+    if (this.sessionActive()) {
+      this.username = this.sessionService.getUsername();
+    }
+  }
 
   sessionActive(): boolean {
     return this.sessionService.isSessionActive();

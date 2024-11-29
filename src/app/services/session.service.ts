@@ -29,4 +29,8 @@ export class SessionService {
   getSessionPassword(): string | null {
     return sessionStorage.getItem('password');
   }
+
+  getUsername(): string | null {
+    return sessionStorage.getItem('user');
+  }
 }
