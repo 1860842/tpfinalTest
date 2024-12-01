@@ -33,11 +33,16 @@ export class ConnexionComponent implements OnInit {
     this.submitted = true;
     this.error = '';
     this.sessionService.createSession(this.username, this.password).subscribe({
-      next: (token) => {
-        this.message = 'Session créée';
-        this.submitted = true;
-        console.log('Session créée');
-        this.router.navigate(['/home']);
+      next: (isActive) => {
+        if (isActive) {
+          this.message = 'Session créée';
+          console.log('Session créée');
+          this.router.navigate(['/home']);
+        } else {
+          this.error = 'La session n\'a pas pu être créée';
+          this.submitted = false;
+          console.log('La session n\'a pas pu être créée');
+        }
       },
       error: (err: HttpErrorResponse) => {
         this.error = err.error.msg;

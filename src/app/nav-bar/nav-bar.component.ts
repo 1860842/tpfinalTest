@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { RouterLink, Router } from '@angular/router';
 import { SessionService } from '../services/session.service';
 import { CommonModule } from '@angular/common';
@@ -10,7 +10,7 @@ import { CommonModule } from '@angular/common';
   templateUrl: './nav-bar.component.html',
   styleUrls: ['./nav-bar.component.css']
 })
-export class NavBarComponent {
+export class NavBarComponent implements OnInit {
   username: string | null = null;
 
   constructor(
@@ -19,15 +19,21 @@ export class NavBarComponent {
   ) {}
 
   ngOnInit() {
- 
+    this.sessionService.myUsernameSubject.subscribe(username => {
+      this.username = username;
+    });
+    if (this.sessionActive()) {
+      this.username = sessionStorage.getItem('username');
+    }
   }
 
   sessionActive(): boolean {
-    return true;
+    return this.sessionService.isSessionActive;
   }
 
   logout() {
     this.sessionService.termineSession();
+    this.username = null;
   }
 
   login() {
