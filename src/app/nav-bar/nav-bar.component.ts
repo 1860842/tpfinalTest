@@ -19,6 +19,7 @@ export class NavBarComponent implements OnInit {
   ) {}
 
   ngOnInit() {
+    this.sessionService.validateTokenOnStart(); // Ensure token validation on component initialization
     this.sessionService.myUsernameSubject.subscribe(username => {
       this.username = username;
     });
@@ -32,7 +33,7 @@ export class NavBarComponent implements OnInit {
   }
 
   logout() {
-    this.sessionService.termineSession();
+    this.sessionService.terminateSession();
     this.username = null;
   }
 

@@ -12,6 +12,7 @@ export class SessionService {
     private http: HttpClient
   ) { 
     console.log("Serveur : " + this.apiUrl);
+    this.validateTokenOnStart(); // Validate token on application start
   }
   private _userName: string = "";
   private _sessionExists: boolean = false;
@@ -56,12 +57,67 @@ export class SessionService {
       map(() => this._sessionExists)
     );
   }
-  termineSession() {
-    this._token = "";
-    this._userName = "";
-    this._sessionExists = false;
-    this._isSessionActive = false;
-    this._mySessionSubject.next(this._sessionExists);
-    this._myUsernameSubject.next(this._userName);
+
+  validateToken(): void {
+    const token = localStorage.getItem('token');
+    if (token) {
+      this.http.get<{ data?: { valid: boolean } }>('https://us-central1-cegep-al.cloudfunctions.net/secret', {
+        headers: { Authorization: token }
+      }).subscribe({
+        next: (response) => {
+          if (response.data && response.data.valid) {
+            this._isSessionActive = true;
+            this._sessionExists = true;
+            this._mySessionSubject.next(this._sessionExists);
+          } else {
+            this.terminateSession();
+          }
+        },
+        error: () => {
+          this.terminateSession();
+        }
+      });
+    } else {
+      this.terminateSession();
+    }
+  }
+
+  validateTokenOnStart(): void {
+    const token = localStorage.getItem('token');
+    if (token) {
+      this.validateToken();
+    }
+  }
+
+  terminateSession() {
+    const token = localStorage.getItem('token');
+    if (token) {
+      this.http.delete('https://us-central1-cegep-al.cloudfunctions.net/session', {
+        headers: { Authorization: token }
+      }).subscribe({
+        next: () => {
+          this._token = "";
+          this._userName = "";
+          this._sessionExists = false;
+          this._isSessionActive = false;
+          this._mySessionSubject.next(this._sessionExists);
+          this._myUsernameSubject.next(this._userName);
+          localStorage.removeItem('token');
+          sessionStorage.removeItem('username');
+          sessionStorage.removeItem('password');
+        },
+        error: () => {
+          this._token = "";
+          this._userName = "";
+          this._sessionExists = false;
+          this._isSessionActive = false;
+          this._mySessionSubject.next(this._sessionExists);
+          this._myUsernameSubject.next(this._userName);
+          localStorage.removeItem('token');
+          sessionStorage.removeItem('username');
+          sessionStorage.removeItem('password');
+        }
+      });
+    }
   }
 }
