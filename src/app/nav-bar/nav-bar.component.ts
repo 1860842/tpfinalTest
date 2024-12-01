@@ -19,7 +19,6 @@ export class NavBarComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    this.sessionService.validateTokenOnStart(); // Ensure token validation on component initialization
     this.sessionService.myUsernameSubject.subscribe(username => {
       this.username = username;
     });

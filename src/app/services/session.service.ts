@@ -12,7 +12,6 @@ export class SessionService {
     private http: HttpClient
   ) { 
     console.log("Serveur : " + this.apiUrl);
-    this.validateTokenOnStart(); // Validate token on application start
   }
   private _userName: string = "";
   private _sessionExists: boolean = false;
@@ -57,24 +56,26 @@ export class SessionService {
       map(() => this._sessionExists)
     );
   }
-
+/*
   validateToken(): void {
     const token = localStorage.getItem('token');
     if (token) {
-      this.http.get<{ data?: { valid: boolean } }>('https://us-central1-cegep-al.cloudfunctions.net/secret', {
+      this.http.get<{ data?: { valid: boolean, owner?: string } }>('https://us-central1-cegep-al.cloudfunctions.net/secret', {
         headers: { Authorization: token }
       }).subscribe({
         next: (response) => {
           if (response.data && response.data.valid) {
             this._isSessionActive = true;
             this._sessionExists = true;
+            this._userName = response.data.owner || sessionStorage.getItem('username') || '';
             this._mySessionSubject.next(this._sessionExists);
+            this._myUsernameSubject.next(this._userName);
           } else {
             this.terminateSession();
           }
         },
         error: () => {
-          this.terminateSession();
+          console.error('Token validation failed');
         }
       });
     } else {
@@ -88,7 +89,7 @@ export class SessionService {
       this.validateToken();
     }
   }
-
+*/
   terminateSession() {
     const token = localStorage.getItem('token');
     if (token) {
@@ -105,6 +106,7 @@ export class SessionService {
           localStorage.removeItem('token');
           sessionStorage.removeItem('username');
           sessionStorage.removeItem('password');
+          console.log('Session terminée');
         },
         error: () => {
           this._token = "";

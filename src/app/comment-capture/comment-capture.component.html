@@ -1,0 +1,33 @@
+<div class="comment-capture p-4 bg-light rounded shadow-sm">
+    <h2 i18n="@@titreCommentCapture" class="text-center mb-4">Écrivez votre commentaire</h2>
+    <form (submit)="soumettre()" novalidate>
+
+        <div class="mb-3">
+            <label for="commentaire" class="form-label" 
+              i18n="@@commentCapture">Votre commentaire</label>
+            <input 
+                id="commentaire" 
+                type="text" 
+                class="form-control" 
+                [(ngModel)]="commentaire" 
+                name="commentaire" 
+                required>
+        </div>
+  
+        <div class="mb-3">
+          <label for="note" class="form-label" i18n="@@noteComment">Votre note</label>
+          <app-notes-etoiles 
+              (noteTotale)="noteSelectionner($event)">
+          </app-notes-etoiles>
+        </div>
+  
+        <button 
+            type="submit" 
+            class="btn btn-primary w-100" 
+            [disabled]="commentaire.trim().length === 0 || note === 0" 
+            i18n="@@boutonSubmitComment">
+            Soumettre
+        </button>
+    </form>
+  </div>
+  
