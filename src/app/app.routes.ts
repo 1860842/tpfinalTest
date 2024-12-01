@@ -6,6 +6,6 @@ import { CaptureComponent } from './capture/capture.component';
 export const routes: Routes = [
   { path: '', component: ConnexionComponent },
   { path: 'connexion', component: ConnexionComponent },
-  { path: 'dashboard', component: NavBarComponent },
+  { path: 'home', component: NavBarComponent },
   { path: 'capture', component: CaptureComponent },     
 ];

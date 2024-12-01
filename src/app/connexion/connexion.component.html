@@ -1,12 +1,13 @@
-<!-- Genere moi un page de login qui demande un username et un mot de passe-->
-<form (ngSubmit)="onSubmit()">
-  <div>
-    <label for="username">Username:</label>
-    <input type="text" id="username" [(ngModel)]="username" name="username" required>
+<div class="row">
+  <div class="col mx-auto border border-primary border-3 rounded-5 p-4 mt-5">
+      <label for="username">Username</label>
+      <input type="username" [(ngModel)]="username" class="form-control" >
+      <label for="password">Password</label>
+      <input type="password" [(ngModel)]="password" class="form-control" >
+
+      <div class="row">
+          <!-- Lorsque qu'un session existe on doit changer cette élément pour le nom d'utilisateur et un bouton logout -->
+          <button class="btn btn-outline-primary mt-3" (click)="creeSession()">Login</button>
+      </div>
   </div>
-  <div>
-    <label for="password">Password:</label>
-    <input type="password" id="password" [(ngModel)]="password" name="password" required>
-  </div>
-  <button type="submit">Login</button>
-</form>
+</div>

@@ -19,17 +19,15 @@ export class NavBarComponent {
   ) {}
 
   ngOnInit() {
-    if (this.sessionActive()) {
-      this.username = this.sessionService.getUsername();
-    }
+ 
   }
 
   sessionActive(): boolean {
-    return this.sessionService.isSessionActive();
+    return true;
   }
 
   logout() {
-    this.sessionService.destroySession();
+    this.sessionService.termineSession();
   }
 
   login() {
