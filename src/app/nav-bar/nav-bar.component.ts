@@ -19,19 +19,36 @@ export class NavBarComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    this.username = this.sessionService.userName;
-    if (this.sessionActive()) {
-      this.username = sessionStorage.getItem('username');
-    }
+    this.sessionService.validateToken().subscribe({
+      next: (isValid) => {
+        if (isValid) {
+          this.username = sessionStorage.getItem('username');
+        } else {
+          this.router.navigate(['/connexion']);
+        }
+      },
+      error: (err) => {
+        console.error('Erreur lors de la validation du token', err);
+        this.router.navigate(['/connexion']);
+      }
+    });
   }
 
   sessionActive(): boolean {
-    return this.sessionService.isSessionActive;
+    // Valeur temporaire pour le return en attendant les methodes de session service
+    return true;
   }
 
   logout() {
-    this.sessionService.terminateSession();
-    this.username = null;
+    this.sessionService.destroySession().subscribe({
+      next: () => {
+        this.username = null;
+        this.router.navigate(['/connexion']);
+      },
+      error: (err) => {
+        console.error('Erreur lors de la déconnexion', err);
+      }
+    });
   }
 
   login() {
@@ -39,6 +56,19 @@ export class NavBarComponent implements OnInit {
   }
 
   validateToken() {
-    this.sessionService.validateToken();
+    this.sessionService.validateToken().subscribe({
+      next: (isValid) => {
+        if (isValid) {
+          console.log('Token is valid');
+        } else {
+          console.log('Token is invalid');
+          this.router.navigate(['/connexion']);
+        }
+      },
+      error: (err) => {
+        console.error('Erreur lors de la validation du token', err);
+        this.router.navigate(['/connexion']);
+      }
+    });
   }
 }

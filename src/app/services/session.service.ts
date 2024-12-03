@@ -39,6 +39,7 @@ export class SessionService {
       }
     ).pipe(
       tap(token => {
+        console.log('Session creee avec succes');
         console.log('Token utilisateur: ', token);
         localStorage.setItem('token', token); // Store token in local storage
         sessionStorage.setItem('username', username.toString()); // Store username in session storage
@@ -52,56 +53,70 @@ export class SessionService {
     );
   }
 
+  destroySession(): Observable<void> {
+    const headers = new HttpHeaders({
+      'Authorization': `${this._token}`
+    });
+    return this.http.delete<void>(
+      'https://us-central1-cegep-al.cloudfunctions.net/session',
+      { headers }
+    ).pipe(
+      tap(() => {
+        console.log('La session et le token a ete detruite');
+        localStorage.removeItem('token');
+        sessionStorage.removeItem('username');
+        sessionStorage.removeItem('password');
+        this._token = null;
+        this._sessionExists = false;
+        this._isSessionActive = false;
+        this._userName = '';
+      })
+    );
+  }
+  ngOnInit(){
+    this.validateToken();
+  }
   validateToken(): Observable<boolean> {
-    console.log('Validation du token');
-    if (this._token) {
-      console.log('Token existe', this._token);
-      const headers = new HttpHeaders().set('Authorization', `Bearer ${this._token}`);
-      return this.http.get<{ valid: boolean, owner?: string }>('https://us-central1-cegep-al.cloudfunctions.net/secret', { headers }).pipe(
-        tap(response => {
-          if (response.valid) {
-            console.log('Token valide');
-            this._isSessionActive = true;
-            this._sessionExists = true;
-            this._userName = response.owner || sessionStorage.getItem('username') || '';
-          } else {
-            this.terminateSession();
-          }
-        }),
-        map(response => response.valid)
-      );
-    } else {
-      this.terminateSession();
-      return new Observable<boolean>(observer => observer.next(false));
-    }
+    const headers = new HttpHeaders({
+      'Authorization': `${this._token}`
+    });
+    return this.http.get<{ valid: boolean }>(
+      'https://us-central1-cegep-al.cloudfunctions.net/secret',
+      { headers }
+    ).pipe(
+      map(response => response.valid),
+      tap(isValid => {
+        if (isValid) {
+          console.log('Session valide');
+          this.getUsername().subscribe(username => {
+            sessionStorage.setItem('username', username);
+          });
+        } else {
+          this._token = null;
+          this._sessionExists = false;
+          this._isSessionActive = false;
+          this._userName = '';
+          localStorage.removeItem('token');
+          sessionStorage.removeItem('username');
+          sessionStorage.removeItem('password');
+          this.destroySession();
+        }
+      })
+    );
   }
 
-  terminateSession() {
-    if (this._token) {
-      const headers = new HttpHeaders().set('Authorization', `Bearer ${this._token}`);
-      this.http.delete('https://us-central1-cegep-al.cloudfunctions.net/session', { headers }).subscribe({
-        next: () => {
-          this._token = "";
-          this._userName = "";
-          this._sessionExists = false;
-          this._isSessionActive = false;
-          localStorage.removeItem('token');
-          sessionStorage.removeItem('username');
-          sessionStorage.removeItem('password');
-          this._token = null;
-          console.log('Session terminée');
-        },
-        error: () => {
-          this._token = "";
-          this._userName = "";
-          this._sessionExists = false;
-          this._isSessionActive = false;
-          localStorage.removeItem('token');
-          sessionStorage.removeItem('username');
-          sessionStorage.removeItem('password');
-          this._token = null;
-        }
-      });
-    }
+  getUsername(): Observable<string> {
+    const headers = new HttpHeaders({
+      'Authorization': `${this._token}`
+    });
+    return this.http.get<{ owner: string }>(
+      'https://us-central1-cegep-al.cloudfunctions.net/secret',
+      { headers }
+    ).pipe(
+      map(response => response.owner),
+      tap(username => {
+        this._userName = username;
+      })
+    );
   }
 }

@@ -13,9 +13,7 @@
             <div class="card-body">
               <p class="card-text">{{ commentaire.commentaire }}</p>
               <app-notes-etoiles [note]="commentaire.note"></app-notes-etoiles>
-              <button *ngIf="canDeleteComment(commentaire.userid)"
-                      (click)="supprimerCommentaire(commentaire.id, commentaire.userid)"
-                      class="btn btn-danger mt-2">Supprimer</button>
+
             </div>
           </div>
         </div>
