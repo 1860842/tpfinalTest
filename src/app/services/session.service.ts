@@ -1,12 +1,13 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable, tap, map } from 'rxjs';
+import { Observable, tap, map } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
 })
 export class SessionService {
   apiUrl = 'us-central1-cegep-al.cloudfunctions.net';
+  _token: string | null = localStorage.getItem('token');
 
   constructor(
     private http: HttpClient
@@ -17,19 +18,13 @@ export class SessionService {
   private _sessionExists: boolean = false;
   private _isSessionActive: boolean = false;
 
-  _mySessionSubject = new BehaviorSubject<boolean>(this._sessionExists);
-
-  get mySessionSubject(): Observable<boolean> {
-    return this._mySessionSubject.asObservable();
+  get userName(): string {
+    return this._userName;
   }
 
-  _myUsernameSubject = new BehaviorSubject<string>(this._userName);
-
-  get myUsernameSubject(): Observable<string> {
-    return this._myUsernameSubject.asObservable();
+  get sessionExists(): boolean {
+    return this._sessionExists;
   }
-  _token = '';
-  username: String = '';
 
   get isSessionActive(): boolean {
     return this._isSessionActive;
@@ -48,64 +43,52 @@ export class SessionService {
         localStorage.setItem('token', token); // Store token in local storage
         sessionStorage.setItem('username', username.toString()); // Store username in session storage
         sessionStorage.setItem('password', password.toString()); // Store password in session storage
+        this._token = token;
         this._sessionExists = true;
         this._isSessionActive = true;
-        this._mySessionSubject.next(this._sessionExists);
-        this._myUsernameSubject.next(this._userName);
+        this._userName = username.toString();
       }),
       map(() => this._sessionExists)
     );
   }
-/*
-  validateToken(): void {
-    const token = localStorage.getItem('token');
-    if (token) {
-      this.http.get<{ data?: { valid: boolean, owner?: string } }>('https://us-central1-cegep-al.cloudfunctions.net/secret', {
-        headers: { Authorization: token }
-      }).subscribe({
-        next: (response) => {
-          if (response.data && response.data.valid) {
+
+  validateToken(): Observable<boolean> {
+    console.log('Validation du token');
+    if (this._token) {
+      console.log('Token existe', this._token);
+      const headers = new HttpHeaders().set('Authorization', `Bearer ${this._token}`);
+      return this.http.get<{ valid: boolean, owner?: string }>('https://us-central1-cegep-al.cloudfunctions.net/secret', { headers }).pipe(
+        tap(response => {
+          if (response.valid) {
+            console.log('Token valide');
             this._isSessionActive = true;
             this._sessionExists = true;
-            this._userName = response.data.owner || sessionStorage.getItem('username') || '';
-            this._mySessionSubject.next(this._sessionExists);
-            this._myUsernameSubject.next(this._userName);
+            this._userName = response.owner || sessionStorage.getItem('username') || '';
           } else {
             this.terminateSession();
           }
-        },
-        error: () => {
-          console.error('Token validation failed');
-        }
-      });
+        }),
+        map(response => response.valid)
+      );
     } else {
       this.terminateSession();
+      return new Observable<boolean>(observer => observer.next(false));
     }
   }
 
-  validateTokenOnStart(): void {
-    const token = localStorage.getItem('token');
-    if (token) {
-      this.validateToken();
-    }
-  }
-*/
   terminateSession() {
-    const token = localStorage.getItem('token');
-    if (token) {
-      this.http.delete('https://us-central1-cegep-al.cloudfunctions.net/session', {
-        headers: { Authorization: token }
-      }).subscribe({
+    if (this._token) {
+      const headers = new HttpHeaders().set('Authorization', `Bearer ${this._token}`);
+      this.http.delete('https://us-central1-cegep-al.cloudfunctions.net/session', { headers }).subscribe({
         next: () => {
           this._token = "";
           this._userName = "";
           this._sessionExists = false;
           this._isSessionActive = false;
-          this._mySessionSubject.next(this._sessionExists);
-          this._myUsernameSubject.next(this._userName);
           localStorage.removeItem('token');
           sessionStorage.removeItem('username');
           sessionStorage.removeItem('password');
+          this._token = null;
           console.log('Session terminée');
         },
         error: () => {
@@ -113,11 +96,10 @@ export class SessionService {
           this._userName = "";
           this._sessionExists = false;
           this._isSessionActive = false;
-          this._mySessionSubject.next(this._sessionExists);
-          this._myUsernameSubject.next(this._userName);
           localStorage.removeItem('token');
           sessionStorage.removeItem('username');
           sessionStorage.removeItem('password');
+          this._token = null;
         }
       });
     }

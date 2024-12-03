@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
+import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { SessionService } from '../services/session.service';
@@ -8,7 +8,7 @@ import { HttpErrorResponse } from '@angular/common/http';
 @Component({
   selector: 'app-connexion',
   standalone: true,
-  imports: [FormsModule, CommonModule],
+  imports: [FormsModule, CommonModule, RouterLink, RouterLinkActive],
   templateUrl: './connexion.component.html',
   styleUrls: ['./connexion.component.css']
 })
@@ -38,6 +38,8 @@ export class ConnexionComponent implements OnInit {
           this.message = 'Session créée';
           console.log('Session créée');
           this.router.navigate(['/home']);
+          this.username = ''; // Clear username field
+          this.password = ''; // Clear password field
         } else {
           this.error = 'La session n\'a pas pu être créée';
           this.submitted = false;

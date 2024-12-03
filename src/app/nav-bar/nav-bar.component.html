@@ -3,5 +3,6 @@
   <div *ngIf="sessionActive()"><a routerLink="/capture">Capture</a></div>
   <div *ngIf="sessionActive()"><a routerLink="/commentaire">Commentaire</a></div>
   <div *ngIf="sessionActive()"><button (click)="logout()">Déconnecter</button></div>
+  <div *ngIf="sessionActive()"><button (click)="validateToken()">Valider Token</button></div>
   <div *ngIf="!sessionActive()"><button (click)="login()">Se connecter</button></div>
 </nav>

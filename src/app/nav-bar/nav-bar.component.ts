@@ -19,9 +19,7 @@ export class NavBarComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    this.sessionService.myUsernameSubject.subscribe(username => {
-      this.username = username;
-    });
+    this.username = this.sessionService.userName;
     if (this.sessionActive()) {
       this.username = sessionStorage.getItem('username');
     }
@@ -38,5 +36,9 @@ export class NavBarComponent implements OnInit {
 
   login() {
     this.router.navigate(['/connexion']);
+  }
+
+  validateToken() {
+    this.sessionService.validateToken();
   }
 }
