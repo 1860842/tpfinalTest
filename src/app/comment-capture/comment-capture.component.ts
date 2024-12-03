@@ -14,10 +14,11 @@ import { SessionService } from '../services/session.service';
 })
 export class CommentCaptureComponent {
 
-  @Output() commentaireSoumis = new EventEmitter<{ commentaire: string; note: number }>();
+  @Output() commentaireSoumis = new EventEmitter<{ id: string; commentaire: string; note: number }>();
 
   commentaire: string = '';
   note: number = 0;
+  messageSoumis: boolean = false;
 
   constructor(private commentairesService: CommentairesService, private sessionService: SessionService) {}
 
@@ -25,32 +26,18 @@ export class CommentCaptureComponent {
     this.note = note;
   }
 
-  // Soumet les commentaires au composant comment-affichage
   soumettre() {
-    if (this.commentaire.trim().length > 0 && this.note > 0) {
-      this.sessionService.isSessionActive.subscribe(isSessionActive => {
-        const token = this.sessionService.getToken();
-        console.log('Session active:', isSessionActive);
-        if (isSessionActive) {
-          this.sessionService.getUsername().subscribe(username => {
-            const userId = username;
-            this.commentairesService.postComment(this.commentaire, this.note, userId, token).subscribe(response => {
-              console.log('Commentaire soumis à l\'API:', response);
-              this.commentaireSoumis.emit({ commentaire: this.commentaire, note: this.note });
-              this.commentaire = ''; 
-              this.note = 0;
-            });
-          });
-        } else {
-          const userId = '';
-          this.commentairesService.postComment(this.commentaire, this.note, userId, token).subscribe(response => {
-            console.log('Commentaire soumis à l\'API:', response);
-            this.commentaireSoumis.emit({ commentaire: this.commentaire, note: this.note });
-            this.commentaire = ''; 
-            this.note = 0;
-          });
-        }
-      });
-    }
+    const commentaire = {
+      message: this.commentaire,
+      rating: this.note
+    };
+
+    this.commentairesService.ajouterCommentaire(commentaire).subscribe(response => {
+      this.commentaireSoumis.emit(response);
+      this.commentaire = '';
+      this.note = 0;
+      this.messageSoumis = true;
+      setTimeout(() => this.messageSoumis = false, 3000); // Hide message after 3 seconds
+    });
   }
 }
