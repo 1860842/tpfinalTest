@@ -10,6 +10,6 @@ export const routes: Routes = [
   { path: 'connexion', component: ConnexionComponent },
   { path: 'home', component: NavBarComponent },
   { path: 'capture', component: CaptureComponent },   
-  { path: 'commentaire', component: CommentAffichageComponent} ,
+  { path: 'comment', component: CommentAffichageComponent} ,
   { path: 'register', component: RegisterComponent }
 ];

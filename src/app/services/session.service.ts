@@ -86,6 +86,7 @@ export class SessionService {
     ).pipe(
       map(response => response.valid),
       tap(isValid => {
+        this._isSessionActive = isValid;
         if (isValid) {
           console.log('Session valide');
           this.getUsername().subscribe(username => {
@@ -118,5 +119,10 @@ export class SessionService {
         this._userName = username;
       })
     );
+  }
+
+ 
+  getUserId(): string {
+    return this._isSessionActive ? this._userName : '';
   }
 }
