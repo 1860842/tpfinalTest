@@ -18,9 +18,7 @@ export class CommentAffichageComponent implements OnInit {
   commentaires: any[] = [];
   nombreCommentaires: number = 0;
 
-  constructor(private commentairesService: CommentairesService, private sessionService: SessionService) {}
-
-  ngOnInit() {
+  constructor(private commentairesService: CommentairesService, private sessionService: SessionService) {
     this.commentairesService.comments.subscribe(comments => {
       this.commentaires = comments;
       this.nombreCommentaires = comments.length;
@@ -32,8 +30,14 @@ export class CommentAffichageComponent implements OnInit {
     });
   }
 
+  ngOnInit() {}
+
   ajouterCommentaire(commentaire: { id: string; commentaire: string; note: number }) {
-    this.commentairesService.getCommentaires().subscribe();
+    this.commentairesService.getCommentaires().subscribe(() => {
+      this.commentairesService.getNombreCommentaires().subscribe(count => {
+        this.nombreCommentaires = count;
+      });
+    });
   }
 
   supprimerCommentaire(id: string) {
@@ -42,6 +46,9 @@ export class CommentAffichageComponent implements OnInit {
     if (commentaire && (commentaire.userid === '' || commentaire.userid === null || commentaire.userid === userid)) {
       this.commentairesService.supprimerCommentaire(id, userid).subscribe(() => {
         this.commentaires = this.commentaires.filter(comment => comment.id !== id);
+        this.commentairesService.getNombreCommentaires().subscribe(count => {
+          this.nombreCommentaires = count;
+        });
       });
     }
   }

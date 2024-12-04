@@ -11,9 +11,30 @@ export class SessionService {
   private _userName = new BehaviorSubject<string>('');
   private _sessionExists = new BehaviorSubject<boolean>(false);
   private _isSessionActive = new BehaviorSubject<boolean>(false);
-
+  private _isTokenValid = new BehaviorSubject<boolean>(true);
+  
   constructor(private http: HttpClient) {
     console.log("Serveur : " + this.apiUrl);
+    if (this._token.value) {
+      this.validateToken().subscribe({
+        next: (isValid) => {
+          this._isTokenValid.next(isValid);
+          if (isValid) {
+            console.log('Token is valid');
+            this.getUsername().subscribe(username => {
+              sessionStorage.setItem('username', username);
+            });
+          } else {
+            console.log('Token is invalid on init');
+          }
+        },
+        error: (err) => {
+          console.error('Erreur lors de la validation du token au démarrage', err);
+        }
+      });
+    } else {
+      this._isTokenValid.next(false);
+    }
   }
 
   get userName(): Observable<string> {
@@ -26,6 +47,10 @@ export class SessionService {
 
   get isSessionActive(): Observable<boolean> {
     return this._isSessionActive.asObservable();
+  }
+
+  get isTokenValid(): Observable<boolean> {
+    return this._isTokenValid.asObservable();
   }
 
   getToken(): string | null {
@@ -83,6 +108,7 @@ export class SessionService {
     ).pipe(
       map(response => response.valid),
       tap(isValid => {
+        this._isTokenValid.next(isValid);
         this._isSessionActive.next(isValid);
         if (isValid) {
           console.log('Session valide');

@@ -36,7 +36,7 @@ export class ConnexionComponent implements OnInit {
       next: (isActive) => {
         if (isActive) {
           this.message = 'Session créée avec succès';
-          this.router.navigate(['/home']);
+          this.router.navigate(['/mytime']);
           this.username = ''; // Clear username field
           this.password = ''; // Clear password field
         } else {

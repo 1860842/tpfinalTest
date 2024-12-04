@@ -16,20 +16,6 @@ export class AppComponent implements OnInit{
   ) { }
 
   ngOnInit(){
-    this.sessionService.validateToken().subscribe({
-      next: (isValid) => {
-        if (isValid) {
-          console.log('Token is valid');
-          this.sessionService.getUsername().subscribe(username => {
-            sessionStorage.setItem('username', username);
-          });
-        } else {
-          console.log('Token is invalid on init');
-        }
-      },
-      error: (err) => {
-        console.error('Erreur lors de la validation du token au démarrage', err);
-      }
-    });
+    // Token validation moved to SessionService constructor
   }
 }

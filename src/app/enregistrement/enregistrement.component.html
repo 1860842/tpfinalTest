@@ -1,0 +1,237 @@
+<div class="container my-5">
+  <form #form="ngForm" (ngSubmit)="onSubmit(form)" novalidate>
+    
+    <h2 i18n>Créez un compte</h2>
+
+    <!-- Username -->
+    <div class="mb-3">
+      <label for="username" class="form-label" i18n>Nom d'utilisateur</label>
+      <input pattern="[a-zA-Z0-9]*" minlength="2" title="Le nom d'utilisateur doit contenir au moins 2 caractères."
+      type="text" id="username" name="username" class="form-control" 
+      [(ngModel)]="username" required>
+      <div i18n *ngIf="form.submitted && form.controls['username']?.invalid" class="text-danger">
+        Le nom d'utilisateur doit contenir au moins 2 caractères.
+      </div>
+    </div>
+    
+    <!-- Nom -->
+    <div class="mb-3">
+      <label for="nom" class="form-label" i18n>Nom</label>
+      <input pattern="[a-zA-Z ]*" minlength="2" title="Le nom doit contenir au moins 2 lettres."
+      type="text" id="nom" name="nom" class="form-control" 
+      (input)="verifInput($event)"
+      [(ngModel)]="nom" required>
+      <div i18n *ngIf="form.submitted && form.controls['nom']?.invalid" class="text-danger">
+        Le nom doit contenir au moins 2 lettres.
+      </div>
+    </div>
+
+    <!-- Prénom -->
+    <div class="mb-3">
+      <label for="prenom" class="form-label" i18n>Prénom</label>
+      <input pattern="[a-zA-Z ]*" minlength="2" title="Le prénom doit contenir au moins 2 lettres."
+      type="text" id="prenom" name="prenom" class="form-control" 
+      [(ngModel)]="prenom" 
+      (input)="verifInput($event)"
+      required>
+      <div i18n *ngIf="form.submitted && form.controls['prenom']?.invalid" class="text-danger">
+        Le prénom doit contenir au moins 2 lettres.
+      </div>
+    </div>
+
+
+    <!-- Courriel -->
+    <div class="mb-3">
+      <label for="courriel" class="form-label" i18n>Courriel</label>
+      <input type="email" id="courriel" name="courriel" class="form-control" 
+      
+      [(ngModel)]="courriel" required>
+      <div i18n *ngIf="form.submitted && form.controls['courriel']?.invalid" class="text-danger">
+        Veuillez entrer une adresse courriel valide.
+      </div>
+    </div>
+
+    <!-- Numéro Civique -->
+    <div class="mb-3">
+      <label for="noCivique" class="form-label" i18n>Numéro Civique</label>
+      <input pattern="[0-9]*" minlength="1" type="text" id="noCivique" name="noCivique" class="form-control" 
+      title="Le numéro civique doit être un nombre."
+      (input)="verifInputChiffre($event)"
+      [(ngModel)]="noCivique" required>
+      <div i18n *ngIf="form.submitted && form.controls['noCivique']?.invalid" class="text-danger">
+        Le numéro civique doit être un nombre.
+      </div>
+    </div>
+
+    <!-- Rue -->
+    <div class="mb-3">
+      <label for="rue" class="form-label" i18n>Rue</label>
+      <input minlength="10" type="text" id="rue" name="rue" class="form-control" 
+      title="Veuillez entrez au moins 10 caractères."
+      (input)="verifInput($event)"
+      [(ngModel)]="rue" required>
+      <div i18n *ngIf="form.submitted && form.controls['rue']?.invalid" class="text-danger">
+        La rue doit contenir au moins 10 caractères.
+      </div>
+    </div>
+
+    <!-- Ville -->
+    <div class="mb-3">
+      <label for="ville" class="form-label" i18n>Ville</label>
+      <input minlength="5" type="text" id="ville" name="ville" class="form-control" 
+        (input)="verifInput($event)"
+        [(ngModel)]="ville" required>
+      <div i18n *ngIf="form.submitted && form.controls['ville']?.invalid" class="text-danger">
+        La ville doit contenir au moins 5 caractères.
+      </div>
+    </div>
+
+    <!-- Pays -->
+    <div class="mb-3">
+      <label for="pays" class="form-label" i18n>Pays</label>
+      <select id="pays" name="pays" class="form-select" [(ngModel)]="pays"  required>
+        <option value="Canada">Canada</option>
+        <option value="US" i18n>États-Unis</option>
+      </select>
+    </div>
+
+    <!-- Province ou État -->
+    <div class="mb-3">
+      @if (pays === 'Canada') {
+        <label for="region" class="form-label">Province</label>
+        <select id="province" name="province" class="form-select" [(ngModel)]="province" required>
+          <option value="" disabled selected i18n>Sélectionner une province</option>
+          <option value="Alberta">Alberta</option>
+          <option value="CB" i18n>Colombie-Britannique</option>
+          <option value="IPE" i18n="@@prince">Ile-du-Prince-Edouard</option>
+          <option value="Manitoba">Manitoba</option>
+          <option value="NB" i18n>Nouveau-Brunswick</option>
+          <option value="NE" i18n>Nouvelle-Écosse</option>
+          <option value="Nunavut">Nunavut</option>
+          <option value="Ontario">Ontario</option>
+          <option value="Quebec">Québec</option>
+          <option value="Saskatchewan">Saskatchewan</option>
+          <option value="TNL" i18n>Terre-Neuve-et-Labrador</option>
+          <option value="TNO" i18n>Territoires du Nord-Ouest</option>
+          <option value="Yukon">Yukon</option>
+        </select>
+        <div i18n *ngIf="form.submitted && (form.controls['province']?.invalid || form.controls['etat']?.invalid)" class="text-danger">
+          Sélectionnez une province valide.
+        </div>
+      }
+      @if (pays === 'US') {
+        <label for="region" class="form-label" i18n="@@etat">État</label>
+        
+        <select id="etat" name="etat" class="form-select" [(ngModel)]="etat" required>
+          <option value="" disabled selected i18n>Sélectionner un état</option>
+          <option value="Alabama">Alabama</option>
+          <option value="Alaska">Alaska</option>
+          <option value="Arizona">Arizona</option>
+          <option value="Arkansas">Arkansas</option>
+          <option value="Californie" i18n>Californie</option>
+          <option value="Caroline du Nord" i18n>Caroline du Nord</option>
+          <option value="Caroline du Sud" i18n>Caroline du Sud</option>
+          <option value="Colorado">Colorado</option>
+          <option value="Connecticut">Connecticut</option>
+          <option value="Dakota du Nord" i18n>Dakota du Nord</option>
+          <option value="Dakota du Sud" i18n>Dakota du Sud</option>
+          <option value="Delaware">Delaware</option>
+          <option value="Floride" i18n>Floride</option>
+          <option value="Georgie" i18n>Georgie</option>
+          <option value="Hawaii">Hawaii</option>
+          <option value="Idaho">Idaho</option>
+          <option value="Illinois">Illinois</option>
+          <option value="Indiana">Indiana</option>
+          <option value="Iowa">Iowa</option>
+          <option value="Kansas">Kansas</option>
+          <option value="Kentucky">Kentucky</option>
+          <option value="Louisiane" i18n>Louisiane</option>
+          <option value="Maine">Maine</option>
+          <option value="Maryland">Maryland</option>
+          <option value="Massachusetts">Massachusetts</option>
+          <option value="Michigan">Michigan</option>
+          <option value="Minnesota">Minnesota</option>
+          <option value="Mississippi">Mississippi</option>
+          <option value="Missouri">Missouri</option>
+          <option value="Montana">Montana</option>
+          <option value="Nebraska">Nebraska</option>
+          <option value="Nevada">Nevada</option>
+          <option value="New Hampshire">New Hampshire</option>
+          <option value="New Jersey">New Jersey</option>
+          <option value="New York">New York</option>
+          <option value="Nouveau-Mexique" i18n>Nouveau-Mexique</option>
+          <option value="Ohio">Ohio</option>
+          <option value="Oklahoma">Oklahoma</option>
+          <option value="Oregon">Oregon</option>
+          <option value="Pennsylvanie" i18n>Pennsylvanie</option>
+          <option value="Rhode Island">Rhode Island</option>
+          <option value="Tennessee">Tennessee</option>
+          <option value="Texas">Texas</option>
+          <option value="Utah">Utah</option>
+          <option value="Vermont">Vermont</option>
+          <option value="Virginie" i18n>Virginie</option>
+          <option value="Virginie-Occidentale" i18n>Virginie-Occidentale</option>
+          <option value="Washington">Washington</option>
+          <option value="Wisconsin">Wisconsin</option>
+          <option value="Wyoming">Wyoming</option>
+        </select>
+        <div *ngIf="form.submitted && (form.controls['province']?.invalid || form.controls['etat']?.invalid)" class="text-danger">
+          Sélectionnez un état valide.
+        </div>
+      }
+     
+    </div>
+
+    <!-- Code postal ou ZIP -->
+    <div class="mb-3">
+      @if (pays === 'Canada') {
+      <label i18n="@@codePostal" for="code" class="form-label">Code Postal</label>
+      <input pattern="[A-Za-z0-9 ]{6}" maxlength="6" type="text" id="codePostal" name="codePostal" class="form-control"
+        [(ngModel)]="codePostal" 
+        required>
+        <div *ngIf="form.submitted && (form.controls['codePostal']?.invalid || form.controls['zip']?.invalid)" class="text-danger">
+          'Entrez un code postal valide'.
+      </div>
+      } @if (pays === 'US') {
+        <label for="code" class="form-label">ZIP</label>
+      <input pattern="[0-9]{5}" maxlength="5" type="text" id="zip" name="zip" class="form-control" 
+        [(ngModel)]="zip" 
+        (input)="verifInput($event)"
+        required>
+      <div *ngIf="form.submitted && (form.controls['codePostal']?.invalid || form.controls['zip']?.invalid)" class="text-danger">
+        Entrez un code ZIP valide.
+      </div>
+    }
+    </div>
+
+    <!-- Mot de passe -->
+    <div class="mb-3">
+      <label for="password" class="form-label" i18n>Mot de passe</label>
+      <input minlength="8" type="password" id="password" name="password" class="form-control" [(ngModel)]="password" required>
+      <div i18n *ngIf="form.submitted && form.controls['password']?.invalid" class="text-danger">
+        Le mot de passe doit contenir au moins 8 caractères.
+      </div>
+    </div>
+
+    <!-- Confirmation du mot de passe -->
+    <div class="mb-3">
+      <label for="confirmPassword" class="form-label" i18n>Confirmation du mot de passe</label>
+      <input minlength="8" type="password" id="confirmPassword" name="confirmPassword" class="form-control" [(ngModel)]="confirmPassword" required>
+      <div i18n *ngIf="form.submitted && password !== confirmPassword" class="text-danger">
+        Les mots de passe doivent correspondre.
+      </div>
+    </div>
+
+    <!-- Boutons -->
+    <div class="d-flex justify-content-between">
+      <button type="submit" class="btn btn-primary" 
+      i18n>S'inscrire</button>
+      <a type="button" class="btn btn-secondary" 
+      [routerLink]="['/mytime']" i18n>Annuler</a>
+    </div>
+
+  </form>
+</div>
+
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/angular-material/1.1.12/angular-material.min.css" rel="stylesheet">
