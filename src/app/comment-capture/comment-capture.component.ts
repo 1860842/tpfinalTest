@@ -29,10 +29,14 @@ export class CommentCaptureComponent {
   soumettre() {
     const commentaire = {
       message: this.commentaire,
-      rating: this.note
+      rating: this.note,
+      date: { value: new Date().toISOString() }
     };
 
     this.commentairesService.ajouterCommentaire(commentaire).subscribe(response => {
+      console.log('Réponse de l\'API :', response);
+      // Ensure the response has the correct date structure
+      response.date = { value: response.date };
       this.commentaireSoumis.emit(response);
       this.commentaire = '';
       this.note = 0;

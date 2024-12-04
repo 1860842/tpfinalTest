@@ -34,4 +34,26 @@ export class CommentairesService {
       })
     );
   }
+
+  supprimerCommentaire(id: string, userid: string): Observable<void> {
+    const headers = new HttpHeaders({
+      'Authorization': `${localStorage.getItem('token')}`
+    });
+
+    return this.http.delete<void>(`${this.apiUrl}/${id}`, { headers }).pipe(
+      tap(() => {
+        const currentComments = this._comments.value.filter(comment => {
+          // Allow deletion if the comment is anonymous or belongs to the current user
+          return comment.id !== id;
+        });
+        this._comments.next(currentComments);
+      })
+    );
+  }
+
+  getNombreCommentaires(): Observable<number> {
+    return this.http.get<{ data?: { msgs_count?: number } }>(`${this.apiUrl}/nb-commentaires`).pipe(
+      map(response => response?.data?.msgs_count || 0)
+    );
+  }
 }

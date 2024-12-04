@@ -16,20 +16,33 @@ import { SessionService } from '../services/session.service';
 })
 export class CommentAffichageComponent implements OnInit {
   commentaires: any[] = [];
+  nombreCommentaires: number = 0;
 
-  constructor(private commentairesService: CommentairesService) {}
+  constructor(private commentairesService: CommentairesService, private sessionService: SessionService) {}
 
   ngOnInit() {
-    this.commentairesService.getCommentaires().subscribe(comments => {
+    this.commentairesService.comments.subscribe(comments => {
       this.commentaires = comments;
+      this.nombreCommentaires = comments.length;
+    });
+    this.commentairesService.getCommentaires().subscribe();
+    this.commentairesService.getNombreCommentaires().subscribe(count => {
+      this.nombreCommentaires = count;
+      console.log('Nombre de commentaires: ', this.nombreCommentaires);
     });
   }
 
   ajouterCommentaire(commentaire: { id: string; commentaire: string; note: number }) {
-    this.commentaires.push(commentaire);
+    this.commentairesService.getCommentaires().subscribe();
   }
 
   supprimerCommentaire(id: string) {
-    this.commentaires = this.commentaires.filter(comment => comment.id !== id);
+    const userid = this.sessionService.getUserId();
+    const commentaire = this.commentaires.find(comment => comment.id === id);
+    if (commentaire && (commentaire.userid === '' || commentaire.userid === null || commentaire.userid === userid)) {
+      this.commentairesService.supprimerCommentaire(id, userid).subscribe(() => {
+        this.commentaires = this.commentaires.filter(comment => comment.id !== id);
+      });
+    }
   }
 }
