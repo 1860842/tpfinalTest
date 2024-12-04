@@ -10,6 +10,7 @@ import { MatFormField } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { MatButtonModule } from '@angular/material/button';
+import { EnregistrementService } from '../services/enregistrement.service';
 
 @Component({
   selector: 'app-enregistrement',
@@ -33,7 +34,8 @@ export class EnregistrementComponent {
   codePostal: string = '';
   zip: string = '';
 
-  form: any;
+  @ViewChild('form') form!: NgForm; // Add the non-null assertion operator
+
   password: string = '';
   confirmPassword: string = '';
 
@@ -67,16 +69,33 @@ export class EnregistrementComponent {
     return false;
   }
 
-  constructor(private router: Router) { }
+  constructor(
+    private router: Router,
+    private enregistrementService: EnregistrementService) { }
   
-  onSubmit(form: NgForm) {
-    if (form.valid && this.password === this.confirmPassword) {
-      this.router.navigate(['/mytime']);
-      const utilisateur = `${this.prenom} ${this.nom}`;
+  onSubmit() {
+    console.log('Formulaire soumis', this.form.valid); // Use this.form.valid to check form validity
+    if (this.form.valid && this.password === this.confirmPassword) {
+      console.log('Formulaire en cours denvoi');
+      this.registerUser();
     } else {
       console.log('Formulaire invalide');
     }
   }
+
+  registerUser() {
+    this.enregistrementService.createUser(this.username, this.password, this.courriel).subscribe({
+      next: (response) => {
+        console.log('User created successfully', response);
+        this.utilisateurCree.emit(this.username);
+        this.router.navigate(['/mytime']);
+      },
+      error: (error) => {
+        console.error('Error creating user', error);
+      }
+    });
+  }
+
   @Output() utilisateurCree = new EventEmitter<string>();
 
   
