@@ -11,6 +11,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { MatButtonModule } from '@angular/material/button';
 import { EnregistrementService } from '../services/enregistrement.service';
+import { SessionService } from '../services/session.service';
 
 @Component({
   selector: 'app-enregistrement',
@@ -71,29 +72,70 @@ export class EnregistrementComponent {
 
   constructor(
     private router: Router,
-    private enregistrementService: EnregistrementService) { }
+    private enregistrementService: EnregistrementService,
+    private sessionService: SessionService) { }
   
   onSubmit() {
     console.log('Formulaire soumis', this.form.valid); // Use this.form.valid to check form validity
     if (this.form.valid && this.password === this.confirmPassword) {
       console.log('Formulaire en cours denvoi');
-      this.registerUser();
+      this.registerUser(); // Keep this commented
+      //this.createProfile();
     } else {
       console.log('Formulaire invalide');
     }
   }
-
+// Keep this commented
   registerUser() {
     this.enregistrementService.createUser(this.username, this.password, this.courriel).subscribe({
       next: (response) => {
         console.log('User created successfully', response);
         this.utilisateurCree.emit(this.username);
-        this.router.navigate(['/mytime']);
+        this.createSession();
       },
       error: (error) => {
         console.error('Error creating user', error);
       }
     });
+  }
+
+  createSession() {
+    this.sessionService.createSession(this.username, this.password).subscribe({
+      next: () => {
+        console.log('Session created successfully');
+        //this.createProfile();
+      },
+      error: (error) => {
+        console.error('Error creating session', error);
+      }
+    });
+  }
+
+  createProfile() {
+    const profileData = {
+      username: this.username,
+      prenom: this.prenom,
+      nom: this.nom,
+      courriel: this.courriel,
+      noCivique: this.noCivique,
+      rue: this.rue,
+      ville: this.ville,
+      province: this.province,
+      etat: this.etat,
+      pays: this.pays,
+      codePostal: this.codePostal,
+      zip: this.zip
+    };
+/*
+    this.enregistrementService.createProfile(profileData).subscribe({
+      next: (response) => {
+        console.log('Profile created successfully', response);
+        this.router.navigate(['/mytime']);
+      },
+      error: (error) => {
+        console.error('Error creating profile', error);
+      }
+    });*/
   }
 
   @Output() utilisateurCree = new EventEmitter<string>();

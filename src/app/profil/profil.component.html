@@ -1,0 +1,17 @@
+<div *ngIf="profile">
+  <h2>Profil de {{ profile.username }}</h2>
+  <p><strong>Prénom:</strong> {{ profile.prenom }}</p>
+  <p><strong>Nom:</strong> {{ profile.nom }}</p>
+  <p><strong>Courriel:</strong> {{ profile.courriel }}</p>
+  <p><strong>Numéro Civique:</strong> {{ profile.noCivique }}</p>
+  <p><strong>Rue:</strong> {{ profile.rue }}</p>
+  <p><strong>Ville:</strong> {{ profile.ville }}</p>
+  <p><strong>Province:</strong> {{ profile.province }}</p>
+  <p><strong>État:</strong> {{ profile.etat }}</p>
+  <p><strong>Pays:</strong> {{ profile.pays }}</p>
+  <p><strong>Code Postal:</strong> {{ profile.codePostal }}</p>
+  <p><strong>ZIP:</strong> {{ profile.zip }}</p>
+</div>
+<div *ngIf="!profile">
+  <p>Chargement du profil...</p>
+</div>
