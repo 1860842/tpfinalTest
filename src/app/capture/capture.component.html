@@ -1,7 +1,9 @@
 <input type="text" #description placeholder="Description de l'activité">
-<button  (click)="startCapture(description.value)">Démarrer l'activité</button>
-<button  (click)="stopCapture()">Terminer l'activité</button>
-<button (click)="stopCapture()">Terminer l'activité</button>
+<button *ngIf="!activiteEnCours" (click)="startCapture(description.value)">Démarrer l'activité</button>
+<button *ngIf="activiteEnCours" (click)="stopCapture()">Terminer l'activité</button>
+<div *ngIf="activiteEnCours"> Activite en cours... </div>
+<div> Temps écoulé: {{ hours }} heures, {{ minutes }} minutes, {{ seconds }} secondes </div>
 <button (click)="logActivityInfo()">Afficher les infos de l'activité</button>
 <button (click)="logAllActivitiesInfo()">Afficher toutes les infos des activités</button>
+<div> {{ activiteEnCours }}</div>
 

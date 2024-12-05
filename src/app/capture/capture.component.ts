@@ -10,10 +10,27 @@ import { CommonModule } from '@angular/common';
   templateUrl: './capture.component.html',
   styleUrl: './capture.component.css'
 })
-export class CaptureComponent {
+export class CaptureComponent implements OnInit {
+  activiteEnCours: boolean = false;
+  tempsEcouler: number = 0; // Variable to store elapsed time
+  hours: number = 0;
+  minutes: number = 0;
+  seconds: number = 0;
 
-  constructor(private captureService: CaptureService) {
+  constructor(
+    private captureService: CaptureService) 
+    {
+      this.captureService.activiteEnCours$.subscribe(status => {
+        this.activiteEnCours = status;
+      });
+      this.captureService.tempsEcouler$.subscribe(time => {
+        this.tempsEcouler = time;
+        this.calculateTime();
+      });
+  }
 
+  ngOnInit() {
+    this.captureService.getActivity().subscribe();
   }
 
   startCapture(description: string) {
@@ -27,6 +44,7 @@ export class CaptureComponent {
       console.log('Activity stopped:', response);
     });
   }
+
   getActivite(): Observable<any> {
     return this.captureService.getActivity();
   }
@@ -41,5 +59,11 @@ export class CaptureComponent {
     this.captureService.getAllActivities().subscribe(response => {
       console.log('All activities data:', response);
     });
+  }
+
+  private calculateTime() {
+    this.hours = Math.floor(this.tempsEcouler / 3600);
+    this.minutes = Math.floor((this.tempsEcouler % 3600) / 60);
+    this.seconds = this.tempsEcouler % 60;
   }
 }
