@@ -1,0 +1,13 @@
+<div>
+  <button (click)="afficherAide()">Afficher Aide</button>
+  <div *ngIf="aideContent">
+    <h1>{{ aideContent.application }}</h1>
+    <p>{{ aideContent.nom }}</p>
+    <p>{{ aideContent.description }}</p>
+    <div *ngFor="let vue of aideContent.vues">
+      <h2>{{ vue.titre }}</h2>
+      <p>{{ vue.description }}</p>
+    </div>
+  </div>
+</div>
+
