@@ -1,10 +1,10 @@
 <div>
-  <button (click)="afficherAide()">Afficher Aide</button>
+  <button (click)="afficherVue()">Afficher Vue</button>
   <div *ngIf="aideContent">
     <p>{{ aideContent.application.nom }}</p>
     <p>{{ aideContent.application.description }}</p>
-    <div *ngFor="let vue of aideContent.application.vues | keyvalue">
-      <h2 (click)="selectView(vue.value)">{{ vue.value.nom }}</h2>
+    <div *ngFor="let vue of aideContent.application.vues | keyvalue; let i = index">
+      <h2 (click)="selectView(vue.value, vue.key, i)">{{ vue.value.nom }}</h2>
       <div *ngIf="selectedView === vue.value">
         <app-aide-enfant [view]="vue.value"></app-aide-enfant>
       </div>

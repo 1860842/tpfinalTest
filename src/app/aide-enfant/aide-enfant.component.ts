@@ -10,4 +10,8 @@ import { Component, Input } from '@angular/core';
 })
 export class AideEnfantComponent {
   @Input() view: any;
+
+  voirView(){
+    console.log(this.view.value);
+  }
 }

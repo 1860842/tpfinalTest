@@ -17,22 +17,36 @@ import { AideEnfantComponent } from '../aide-enfant/aide-enfant.component';
   styleUrl: './aide.component.css'
 })
 export class AideComponent implements OnInit {
-  aideContent: { application: { nom: string, description: string, vues: any[] } } | null = null;
+  aideContent: { application: { nom: string, description: string, vues: { [key: string]: any } } } | null = null;
   langue: string = (document.documentElement.lang || 'fr').substring(0, 2);
   selectedView: any = null;
+  gestionSessionName: string | null = null;
+  gestionSessionKey: string | null = null;
 
-  constructor(private aideService: AideService) {}
+  constructor(private aideService: AideService, private router: Router, private route: ActivatedRoute) {}
 
   ngOnInit(): void {
     this.afficherAide();
     this.aideService.aideContent$.subscribe({ 
       next: (data: { application: { nom: string, description: string, vues: any[] } }) => {
         this.aideContent = data;
+        this.checkUrlForView();
       },
       error: (err) => {
         console.error('Error fetching aide content', err);
       }
     });
+  }
+
+  checkUrlForView(): void {
+    const viewKey = this.route.snapshot.paramMap.get('viewKey');
+    if (viewKey) {
+      const vues = this.aideContent?.application.vues || {};
+      const vue = Object.entries(vues).find(([key, value]) => key === viewKey);
+      if (vue) {
+        this.selectedView = vue[1];
+      }
+    }
   }
 
   afficherAide(): void {
@@ -47,8 +61,16 @@ export class AideComponent implements OnInit {
       }
     });
   }
-
-  selectView(view: any): void {
-    this.selectedView = this.selectedView === view ? null : view;
+  afficherVue(){
+    console.log(this.aideContent?.application.vues);
   }
+
+  selectView(view: any, key: string, index: number): void {
+    this.selectedView = this.selectedView === view ? null : view;
+    const viewKeys = ['captureTemps', 'enregistrementProfil', 'gestionSession', 'rapportTemps', 'vueMessages'];
+    if (index >= 0 && index < viewKeys.length) {
+      this.router.navigate(['/mytime/aide', viewKeys[index]]);
+    }
+  }
+
 }
