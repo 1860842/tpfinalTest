@@ -7,6 +7,7 @@ import { tap } from 'rxjs/operators';
   providedIn: 'root'
 })
 export class CaptureService {
+  activiteEnCours: boolean = false;
 
   constructor(private http: HttpClient) {
 
@@ -42,8 +43,15 @@ export class CaptureService {
       'Authorization': `${token}`
     });
     return this.http.get<any>(url, { headers }).pipe(
-      tap(response => {
+      map(response => {
         console.log('Activity data:', response);
+        if (response.length > 0) {
+          this.activiteEnCours = true;
+        } else {
+          this.activiteEnCours = false;
+        }
+        console.log('Lactivite est en cours: ', this.activiteEnCours);
+        return response;
       })
     );
   }
