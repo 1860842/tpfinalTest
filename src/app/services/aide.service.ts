@@ -14,8 +14,7 @@ export class AideService {
 
   getAide(langue: string): Observable<any> {
     const headers = new HttpHeaders({
-      'Content-Type': 'application/json',
-      'Accept': 'application/json'
+      'Content-Type': 'application/json'
     });
     return this.http.get<any>(`${this.apiUrl}/aide2024/${langue}`, { headers }).pipe(
       tap(data => this.aideContentSubject.next(data)),
