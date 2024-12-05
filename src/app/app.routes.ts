@@ -6,7 +6,7 @@ import { CommentAffichageComponent } from './comment-affichage/comment-affichage
 import { EnregistrementComponent } from './enregistrement/enregistrement.component';
 
 export const routes: Routes = [
-  { path: '', component: ConnexionComponent },
+  { path: '', component: NavBarComponent },
   { path: 'connexion', component: ConnexionComponent },
   { path: 'mytime', component: NavBarComponent },
   { path: 'capture', component: CaptureComponent },   

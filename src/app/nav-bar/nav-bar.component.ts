@@ -23,27 +23,24 @@ export class NavBarComponent implements OnInit {
       next: (isValid) => {
         if (isValid) {
           this.username = sessionStorage.getItem('username');
-        } else {
-          this.router.navigate(['/connexion']);
         }
       },
       error: (err) => {
         console.error('Erreur lors de la validation du token', err);
-        this.router.navigate(['/connexion']);
       }
     });
   }
 
   sessionActive(): boolean {
-    // Valeur temporaire pour le return en attendant les methodes de session service
-    return true;
+    let isActive = false;
+    this.sessionService.isSessionActive.subscribe(value => isActive = value);
+    return isActive;
   }
 
   logout() {
     this.sessionService.destroySession().subscribe({
       next: () => {
         this.username = null;
-        this.router.navigate(['/connexion']);
       },
       error: (err) => {
         console.error('Erreur lors de la déconnexion', err);

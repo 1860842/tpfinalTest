@@ -1,1 +1,7 @@
-<p>capture works!</p>
+<input type="text" #description placeholder="Description de l'activité">
+<button  (click)="startCapture(description.value)">Démarrer l'activité</button>
+<button  (click)="stopCapture()">Terminer l'activité</button>
+<button (click)="stopCapture()">Terminer l'activité</button>
+<button (click)="logActivityInfo()">Afficher les infos de l'activité</button>
+<button (click)="logAllActivitiesInfo()">Afficher toutes les infos des activités</button>
+

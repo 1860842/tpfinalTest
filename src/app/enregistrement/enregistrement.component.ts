@@ -103,6 +103,7 @@ export class EnregistrementComponent {
     this.sessionService.createSession(this.username, this.password).subscribe({
       next: () => {
         console.log('Session created successfully');
+        this.router.navigate(['/mytime']);
         //this.createProfile();
       },
       error: (error) => {
