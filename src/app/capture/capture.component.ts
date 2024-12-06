@@ -2,11 +2,12 @@ import { Component, OnInit } from '@angular/core';
 import { CaptureService } from '../services/capture.service';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { CommonModule } from '@angular/common';
+import { NavBarComponent } from '../nav-bar/nav-bar.component';
 
 @Component({
   selector: 'app-capture',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, NavBarComponent],
   templateUrl: './capture.component.html',
   styleUrl: './capture.component.css'
 })

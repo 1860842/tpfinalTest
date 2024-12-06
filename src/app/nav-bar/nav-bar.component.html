@@ -1,7 +1,7 @@
 <nav>
   <div *ngIf="sessionActive()">Utilisateur: {{ username }}</div>
-  <div *ngIf="sessionActive()"><a routerLink="/capture">Capture</a></div>
-  <div *ngIf="sessionActive()"><a routerLink="/rapport">Rapport</a></div>
+  <div *ngIf="sessionActive()"><a routerLink="/mytime/capture">Capture</a></div>
+  <div *ngIf="sessionActive()"><a routerLink="/mytime/rapport">Rapport</a></div>
   <div *ngIf="sessionActive()"><a routerLink="/mytime/comments">Commentaire</a></div>
   <div><a routerLink="/mytime/aide">Aide</a></div>
 
