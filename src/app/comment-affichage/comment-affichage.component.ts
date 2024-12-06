@@ -6,11 +6,12 @@ import { CommentCaptureComponent } from "../comment-capture/comment-capture.comp
 import { NotesEtoilesComponent } from '../notes-etoiles/notes-etoiles.component';
 import { CommentairesService } from '../services/commentaires.service';
 import { SessionService } from '../services/session.service';
+import { NavBarComponent } from '../nav-bar/nav-bar.component';
 
 @Component({
   selector: 'app-comment-affichage',
   standalone: true,
-  imports: [NotesEtoilesComponent, CommonModule, FormsModule, RouterLink, RouterLinkActive, RouterModule, CommentCaptureComponent],
+  imports: [NotesEtoilesComponent, CommonModule, FormsModule, RouterLink, RouterLinkActive, RouterModule, CommentCaptureComponent, NavBarComponent],
   templateUrl: './comment-affichage.component.html',
   styleUrl: './comment-affichage.component.css'
 })

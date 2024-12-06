@@ -1,5 +1,11 @@
 <div *ngIf="view">
-  <p>{{ view.composants.boutonDemarrer }}</p>
-  <p>{{ view.fonctionnement }}</p>
   <p>{{ view.fonctionnalite }}</p>
+  <div> Composants: </div>
+  <div *ngFor="let composant of view.composants | keyvalue">
+    <p>{{ composant.key }}: {{ composant.value }}</p>
+  </div>
+  <div> Fonctionnement: </div>
+  <div *ngFor="let item of view.fonctionnement">
+    <p>{{ item }}</p>
+  </div>
 </div>

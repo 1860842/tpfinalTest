@@ -1,22 +1,43 @@
 import { Component, OnInit } from '@angular/core';
-import { RouterLink, Router } from '@angular/router';
+import { RouterLink, Router, ActivatedRoute, RouterOutlet } from '@angular/router';
 import { SessionService } from '../services/session.service';
 import { CommonModule } from '@angular/common';
-
+import { CdkMenuModule } from '@angular/cdk/menu';
+import { MatIconModule } from '@angular/material/icon';
 @Component({
   selector: 'app-nav-bar',
   standalone: true,
-  imports: [RouterLink, CommonModule],
+  imports: [RouterLink, CommonModule, CdkMenuModule, MatIconModule, RouterOutlet],
   templateUrl: './nav-bar.component.html',
   styleUrls: ['./nav-bar.component.css']
 })
 export class NavBarComponent implements OnInit {
   username: string | null = null;
-
+  menuOuvert = true;
+  fermerOuvrirMenu() {
+    this.menuOuvert = !this.menuOuvert;
+   
+  }
+  vueCompacte: boolean = false;
+  estCompacte = false; 
+  activerCompacte() {
+    this.estCompacte = !this.estCompacte;
+    
+    this.router.navigate([], {
+      relativeTo: this.route,
+      queryParams: { compact: this.estCompacte },
+      queryParamsHandling: 'merge', 
+    });
+  }
   constructor(
     private sessionService: SessionService,
-    private router: Router
-  ) {}
+    private router: Router,
+    private route: ActivatedRoute
+  ) {
+    this.route.queryParams.subscribe(params => {
+      this.estCompacte = params['compact'] === 'true';
+    });
+  }
 
   ngOnInit() {
     this.sessionService.validateToken().subscribe({

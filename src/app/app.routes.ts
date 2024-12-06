@@ -6,6 +6,7 @@ import { EnregistrementComponent } from './enregistrement/enregistrement.compone
 import { NavBarComponent } from './nav-bar/nav-bar.component';
 import { CaptureComponent } from './capture/capture.component';
 import { RapportComponent } from './rapport/rapport.component';
+import { PageNotFoundComponent } from './page-not-found/page-not-found.component';
 
 export const routes: Routes = [
     { path: '', redirectTo: '/mytime', pathMatch: 'full' },
@@ -15,6 +16,7 @@ export const routes: Routes = [
     { path: 'mytime/comments', component: CommentAffichageComponent },
     { path: 'connexion', component: ConnexionComponent },
     { path: 'enregistrement', component: EnregistrementComponent },
-    { path: 'capture', component: CaptureComponent},
-    { path: 'rapport', component: RapportComponent }
+    { path: 'mytime/capture', component: CaptureComponent},
+    { path: 'mytime/rapport', component: RapportComponent },
+    { path: '**', component: PageNotFoundComponent }
 ];

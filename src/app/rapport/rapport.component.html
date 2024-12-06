@@ -1,17 +1,27 @@
-<p>rapport works!</p>
-<table class="table table-striped">
-  <thead>
-    <tr>
-      <th scope="col">Description</th>
-      <th scope="col">Début</th>
-      <th scope="col">Fin</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr *ngFor="let activity of activities">
-      <td>{{ activity.description }}</td>
-      <td>{{ activity.debut.value }}</td>
-      <td>{{ activity.fin?.value || 'ongoing' }}</td>
-    </tr>
-  </tbody>
-</table>
+
+<div class="container">
+  <div class="row">
+    <div class="col-3">
+      <app-nav-bar></app-nav-bar>
+    </div>
+  
+    <div class="col-9">
+      <table class="table table-striped">
+        <thead>
+          <tr>
+            <th scope="col">Description</th>
+            <th scope="col">Début</th>
+            <th scope="col">Fin</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let activity of activities">
+            <td>{{ activity.description }}</td>
+            <td>{{ activity.debut.value }}</td>
+            <td>{{ activity.fin?.value || 'ongoing' }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
